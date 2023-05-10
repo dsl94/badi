@@ -2,6 +2,7 @@ from fastapi import Request, FastAPI
 from pydantic import BaseModel
 from starlette.middleware.cors import CORSMiddleware
 import openai
+import os
 import pandas as pd
 from scipy import spatial
 
@@ -10,6 +11,7 @@ class Question(BaseModel):
 
 EMBEDDING_MODEL = "text-embedding-ada-002"
 GPT_MODEL = "gpt-3.5-turbo"
+openai.api_key = openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
 origins = ["*"]
