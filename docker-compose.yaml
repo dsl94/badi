@@ -6,3 +6,11 @@ services:
       - 8000
     ports:
       - 8000:8000
+  badi-bot:
+    image:
+      badi-bot
+    expose:
+      - 80
+      - 8082
+    ports:
+      - 8082:80
