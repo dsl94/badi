@@ -10,7 +10,6 @@ class Question(BaseModel):
 
 EMBEDDING_MODEL = "text-embedding-ada-002"
 GPT_MODEL = "gpt-3.5-turbo"
-openai.api_key = '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'
 
 app = FastAPI()
 origins = ["*"]
