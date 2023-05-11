@@ -5,9 +5,17 @@ import openai
 import pandas as pd
 from scipy import spatial
 from io import StringIO
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+from datetime import datetime
 
 EMBEDDING_MODEL = "text-embedding-ada-002"
 GPT_MODEL = "gpt-3.5-turbo"
+
+cred = credentials.Certificate('firebase-sdk.json')
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 app = FastAPI()
 origins = ["*"]
@@ -39,6 +47,14 @@ def strings_ranked_by_relatedness(
     strings_and_relatednesses.sort(key=lambda x: x[1], reverse=True)
     strings, relatednesses = zip(*strings_and_relatednesses)
     return strings[:top_n], relatednesses[:top_n]
+
+def writeToFirestore(question, answer):
+    doc_ref = db.collection('badi').document(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
+    doc_ref.set({
+
+        'question': question,
+        answer: answer,
+    })
 
 
 @app.get("/", tags=["Root"])
@@ -121,4 +137,5 @@ async def search(question: Question):
     result = {
         "answer": response['choices'][0]['message']['content']
     }
+    writeToFirestore(question.question, result['answer'])
     return result
