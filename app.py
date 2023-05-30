@@ -142,3 +142,24 @@ async def search(question: Question):
     }
     writeToFirestore(question.question, result['answer'])
     return result
+
+
+@app.post("/recipe")
+async def search(question: Question):
+    prompt = f"""Can you give me a recipe with this ingredients: {question.question}"""
+    # prompt = f"""Can you give me a recipe with this ingredients: beef, cheese, garlic, gnocchi?"""
+    response = openai.Completion.create(model="text-davinci-003", prompt=prompt, temperature=0, max_tokens=1000)
+    food = response['choices'][0]['text']
+    print(food)
+    food_prompt = "Photorealistic Image of food with this recipe: " + food
+    response = openai.Image.create(
+        prompt=food_prompt,
+        n=1,
+        size="1024x1024"
+    )
+    image_url = response['data'][0]['url']
+
+    return {
+        "recipe": food,
+        "image_url": image_url
+    }
