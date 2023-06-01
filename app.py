@@ -151,7 +151,10 @@ async def search(question: Question):
     response = openai.Completion.create(model="text-davinci-003", prompt=prompt, temperature=0, max_tokens=1000)
     food = response['choices'][0]['text']
     print(food)
-    food_prompt = "Photorealistic Image of food with this recipe: " + food
+    short = f"""Make this recipe shorter so it can be used as prompt for image generation using dalle {food}?"""
+    response2 = openai.Completion.create(model="text-davinci-003", prompt=short, temperature=0, max_tokens=1000)
+    food2 = response2['choices'][0]['text']
+    food_prompt = "Photorealistic Image of food in a plate with this recipe: " + food2
     response = openai.Image.create(
         prompt=food_prompt,
         n=1,
